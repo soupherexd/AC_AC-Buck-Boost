@@ -70,15 +70,12 @@ void OLED_Init(void)
     OLED_WriteCommand(0xd9);    //--set pre-charge period
     OLED_WriteCommand(0xf1);
 
-    OLED_WriteCommand(0xda);    //--set com pins hardware configuration
-    OLED_WriteCommand(0x12);
+    OLED_WriteCommand(0xda);    //--set com pins hardware configuration (SSD1315)
+    OLED_WriteCommand(0x02);
 
     OLED_WriteCommand(0xdb);    //--set vcomh
-    OLED_WriteCommand(0x40);
+    OLED_WriteCommand(0x20);
 
-    OLED_WriteCommand(0x8d);    //--set chare pump enable/disable
-    OLED_WriteCommand(0x14);    //--set(0x10) disable
-    //OLED_WriteCommand(0x10);  //--set(0x10) disable
     OLED_WriteCommand(0xaf);    //--turn on oled panel
 
     OLED_Clean();
@@ -268,8 +265,6 @@ void num2char(unsigned char *str, double number, Uint8 g, Uint8 l)
 //--------------------------------------------------------------
 void OLED_ON(void)
 {
-    OLED_WriteCommand(0X8D);  //…Ë÷√µÁ∫…±√
-    OLED_WriteCommand(0X14);  //ø™∆ÙµÁ∫…±√
     OLED_WriteCommand(0XAF);  //OLEDªΩ–—
 }
 
@@ -281,8 +276,6 @@ void OLED_ON(void)
 //--------------------------------------------------------------
 void OLED_OFF(void)
 {
-    OLED_WriteCommand(0X8D);  //…Ë÷√µÁ∫…±√
-    OLED_WriteCommand(0X10);  //πÿ±’µÁ∫…±√
     OLED_WriteCommand(0XAE);  //OLED–›√ﬂ
 }
 
