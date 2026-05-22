@@ -98,8 +98,8 @@ void InitAdcAio()
    the ADC and modifying the ADCOFFTRIM register. VREFLO is sampled by the ADC using an internal
    MUX select which connects VREFLO to A5 without sacrificing an external ADC pin. This
    function calls two other functions:
-   - AdcChanSelect(channel) – selects the ADC channel to convert
-   - AdcConversion() – initiates several ADC conversions and returns the average
+   - AdcChanSelect(channel) ?selects the ADC channel to convert
+   - AdcConversion() ?initiates several ADC conversions and returns the average
 */
 void AdcOffsetSelfCal()
 {
