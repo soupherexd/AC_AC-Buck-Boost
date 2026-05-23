@@ -1,0 +1,38 @@
+# --- TI Code Composer Studio ---
+# Build output directories
+Debug/
+Release/
+
+# CCS intermediate build files
+*.obj
+*.o
+*.out
+*.d
+*.hex
+*.map
+*.xml
+*.opt
+
+# CCS project metadata (auto-generated, machine-specific)
+.settings/
+.launches/
+.ccsproject
+.cproject
+.project
+
+# Target configuration (debug probe settings)
+targetConfigs/
+
+# --- General ---
+# OS files
+Thumbs.db
+.DS_Store
+
+# PowerShell scripts (user-local)
+convert_all_gb_to_utf8.ps1
+
+# IDE/editor files
+*.swp
+*.swo
+*~
+.vscode/
