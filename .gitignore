@@ -31,6 +31,9 @@ Thumbs.db
 # PowerShell scripts (user-local)
 convert_all_gb_to_utf8.ps1
 
+# CCS backup files
+*.bak
+
 # IDE/editor files
 *.swp
 *.swo
