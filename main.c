@@ -162,10 +162,10 @@ void main(void)
     //PieVectTable.EPWM1_INT = &epwm1_isr;
     //EDIS;
 
-    #ifdef FLASH
+//    #ifdef FLASH
     memcpy(&RamfuncsRunStart, &RamfuncsLoadStart, (Uint32)&RamfuncsLoadSize);
     InitFlash();
-    #endif
+//    #endif
 
    //Flash配置
    //开启:注释两行井号语句 文件启用F28069.cmd 关停28069_RAM_lnk.cmd
