@@ -104,13 +104,14 @@ int tag_list[4] = {0, 1, 0, 1};
 float a = 0;
 float sum1 = 0;
 float sum2 = 0;
-float U_in = 0;   // 输入电压
-float I_in = 0;   // 输入电流
-float U_out = 0;  // 输出电压
-float I_out = 0;  // 输出电流
-float I_L = 0;    // 电感电流
-float U_RMS = 0;  // 电压有效值
-float I_RMS = 0;  // 电流有效值
+float U_in = 0;      // 输入电压
+float I_in = 0;      // 输入电流
+float U_out = 0;     // 输出电压
+float I_out = 0;     // 输出电流
+float I_L = 0;       // 电感电流
+float U_RMS = 0;     // 输出电压有效值
+float U_in_RMS = 0;  // 输入电压有效值
+float I_RMS = 0;     // 电流有效值
 
 float U_near0 = 5;       // 零点死区电压范围
 float Duty_Cycle = 0.4;  // 占空比
@@ -166,7 +167,7 @@ void main(void) {
 
     // Flash配置
     // 开启:注释两行井号语句 文件启用F28069.cmd 关停28069_RAM_lnk.cmd
-    // 关闭:启用两行井号语句 文件关停F28069.cmd 启停28069_RAM_lnk.cmd
+    // 关闭:启用两行井号语句 文件关停F28069.cmd 启用28069_RAM_lnk.cmd
 
     Init_KEY();  // 默认GPIO口已配置正常,可不使用
     EPWM1_Init();
@@ -190,7 +191,7 @@ void main(void) {
     for (for_count = 0; for_count < sin_len; for_count++)
         sinx2[for_count] = 0;
 
-    OLED_ShowString(0, 0, "OFF Grid");
+    OLED_ShowString(0, 0, "Ui:      Uo:");  // 占位符，供ShowFloat覆盖数值
     OLED_ShowString(0, 1, "Uref");
     OLED_ShowString(0, 2, "D1");
     OLED_ShowString(0, 3, "TAG");
@@ -220,16 +221,24 @@ __interrupt void adc_isr(void) {
         Duty_Cycle = PID_FirstOrderFilter4(Duty_Cycle);                   // 滤波
     } else if (tag == 1)                                                  // 离网工作模式
     {
-        for (for_count = 0; for_count < sin_len - 1; for_count++)  // 队列，用于记录一周期长度内的离散正弦电压采样值
+        /* U_out 队列 → 输出RMS */
+        for (for_count = 0; for_count < sin_len - 1; for_count++)
             sinx1[for_count] = sinx1[for_count + 1];
         sinx1[sin_len - 1] = U_out;
         U_RMS = Integral_Cal1();               // 离散积分计算 得有效值
         U_RMS = PID_FirstOrderFilter1(U_RMS);  // 滤波
-        Duty_Cycle += PID1_Cal(U_RMS);         // 闭环PID
-    } else if (tag == 0)                       // 全关断模式
+
+        /* U_in 队列 → 输入RMS */
+        for (for_count = 0; for_count < sin_len - 1; for_count++)
+            sinx2[for_count] = sinx2[for_count + 1];
+        sinx2[sin_len - 1] = U_in;
+        U_in_RMS = Integral_Cal2();  // 离散积分计算 得有效值
+
+        Duty_Cycle += PID1_Cal(U_RMS);  // 闭环PID
+    } else if (tag == 0)                // 全关断模式
     {
         Duty_Cycle = 0.4;
-        U_REF = 24;
+        //        U_REF = 24;
         I_REF = 1.3;
     }
 
@@ -316,8 +325,17 @@ void PLL1(float UI) {  // 广义二阶积分SOGI
 
 //*******************OLED函数*******************//
 void OLED_output() {
+    /* 第0行：Ui:xx.x Uo:xx.x */
+    OLED_ShowFloat(3, 0, U_in_RMS, 3);
+    OLED_ShowFloat(10, 0, U_RMS, 3);
+
+    /* 第1行：Uref xx.x */
     OLED_ShowFloat(5, 1, pid1.Ref, 3);
+
+    /* 第2行：D1 x.xxx */
     OLED_ShowFloat(3, 2, Duty_Cycle, 3);
+
+    /* 第3行：TAG x */
     OLED_ShowNum(4, 3, tag, 1);
 }
 
